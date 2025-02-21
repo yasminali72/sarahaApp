@@ -52,7 +52,12 @@ const userSchema = new Schema(
     isDeleted:{
       type:Boolean,
       default:false
-    },reActiveProfileOTP:String
+    },reActiveProfileOTP:String,
+    verifyCode:String,
+    resetPassword:{
+      type:Boolean
+      ,default:false
+    }
   },
   { timestamps: true }
 );

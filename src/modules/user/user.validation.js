@@ -1,6 +1,7 @@
 import joi from 'joi'
 import { generalFields, validationObjectId } from '../../middleware/validation.middleware.js'
 
+
 export const updateProfile=joi.object().keys({
     userName:generalFields.userName,
     gender:generalFields.gender,
@@ -32,3 +33,16 @@ export const updatePhone=joi.object().keys({
   }).required()
 
 
+export const forgetPassword=joi.object().keys({
+  email:generalFields.email.required()
+}).required()
+
+export const verifyCode=joi.object().keys({
+ otp:generalFields.otp.required(),
+ email:generalFields.email.required()
+}).required()
+
+export const resetPassword=joi.object().keys({
+  email:generalFields.email.required()
+  ,newPassword:generalFields.password.required(),confirmationPassword:generalFields.confirmationPassword.valid(joi.ref("newPassword")).required()
+ }).required()

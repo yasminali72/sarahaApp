@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { freezeProfile, profile, reActiveProfile, shareProfile, unFreezeProfile, updatePassword, updatePhone, updateProfile } from "./services/user.services.js";
+import { deleteMessage, forgetPassword, freezeProfile, profile, reActiveProfile, resetPassword, shareProfile, unFreezeProfile, updatePassword, updatePhone, updateProfile, verifyCode } from "./services/user.services.js";
 import { authentication, authorization } from "../../middleware/auth.middleware.js";
 import { endpoint } from "./user.endpoint.js";
 import { validation } from "../../middleware/validation.middleware.js";
@@ -15,6 +15,13 @@ router.patch("/updatePhone",validation(validators.updatePhone),authentication(),
 router.delete("/profile",authentication(),authorization(endpoint.profile),freezeProfile)
 router.patch("/unFreezeProfile",validation(validators.unFreezeProfile),unFreezeProfile)
 router.patch("/reActiveProfile",validation(validators.reActiveProfile),reActiveProfile)
+
+router.delete("/:messageId",authentication(),authorization(endpoint.profile),deleteMessage)
+
+router.patch("/forgetPassword",validation(validators.forgetPassword),forgetPassword)
+router.patch("/verifyCode",validation(validators.verifyCode),verifyCode)
+router.patch("/resetPassword",validation(validators.resetPassword),resetPassword)
+
 
 
 

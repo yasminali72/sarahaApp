@@ -10,5 +10,5 @@ const messageSchema=new Schema({
     },recipientId:{type:Types.ObjectId,ref:"User",require:true}
 },{timestamps:true})
 
-const messageModel=mongoose.model.Message || model("Message",messageSchema)
+const messageModel = mongoose.models.Message || model("Message",messageSchema)
 export default messageModel

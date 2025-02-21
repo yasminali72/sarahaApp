@@ -1,4 +1,4 @@
-export const reActiveProfile=({code}={})=>{
+export const confirmOTP=({code}={})=>{
 return `<!DOCTYPE html>
 <html lang="en">
 <head>
