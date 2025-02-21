@@ -15,24 +15,29 @@ import { compareHash, generateHash } from "../../../utils/security/hash.js";
 // get profile
 export const profile = asyncHandler(async (req, res, next) => {
   req.user.phone = generateDecrytion({ cipherText: req.user.phone });
-  
-  const messages=await messageModel.find({recipientId:req.user._id}).populate([{
-    path:"recipientId",
-    select:"-password"
-  }])
+
+  const messages = await messageModel
+    .find({ recipientId: req.user._id })
+    .populate([
+      {
+        path: "recipientId",
+        select: "-password",
+      },
+    ]);
   return sucessResponseHandling({
     res,
     message: "Profile",
-    data: { user: req.user ,messages},
-    
+    data: { user: req.user, messages },
   });
 });
 //  share profile
 export const shareProfile = asyncHandler(async (req, res, next) => {
-  const user = await userModel.findOne({
-    _id: req.params.userId,
-    isDeleted: false,
-  }).select("userName email DOB image");
+  const user = await userModel
+    .findOne({
+      _id: req.params.userId,
+      isDeleted: false,
+    })
+    .select("userName email DOB image");
 
   return user
     ? sucessResponseHandling({
@@ -143,63 +148,62 @@ export const reActiveProfile = asyncHandler(async (req, res, next) => {
   return next(new Error("error"));
 });
 // delete message
-export const deleteMessage=asyncHandler(async(req,res,next)=>{
-const {messageId}=req.params
-console.log(req.user);
-if (!await messageModel.findById(messageId)) {
-  return next(new Error("message not found"))
-}
- const message= await messageModel.deleteOne({_id:messageId})
- console.log(message);
- const messages=await messageModel.find({recipientId:req.user._id})
- console.log(messages);
-  return sucessResponseHandling({res,message:"message is deleted",data:[{messages}]})
-})
-
+export const deleteMessage = asyncHandler(async (req, res, next) => {
+  const { messageId } = req.params;
+  console.log(req.user);
+  if (!(await messageModel.findById(messageId))) {
+    return next(new Error("message not found"));
+  }
+  const message = await messageModel.deleteOne({ _id: messageId });
+  console.log(message);
+  const messages = await messageModel.find({ recipientId: req.user._id });
+  console.log(messages);
+  return sucessResponseHandling({
+    res,
+    message: "message is deleted",
+    data: [{ messages }],
+  });
+});
 
 // forget password
-export const forgetPassword=asyncHandler(async(req,res,next)=>{
+export const forgetPassword = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
 
-const {email}=req.body
-
-if (await userModel.findOne({email})) {
-
-  emailEvent.emit("emailForVerifyCode",{email})
-  return sucessResponseHandling({res,message:"code is sent"})
-}
-return next(new Error("email not exist"))
-
-})
-export const verifyCode=asyncHandler(async(req,res,next)=>{
-const {otp,email}=req.body
-console.log(otp);
-const user=await userModel.findOne({email})
+  if (await userModel.findOne({ email })) {
+    emailEvent.emit("emailForVerifyCode", { email });
+    return sucessResponseHandling({ res, message: "code is sent" });
+  }
+  return next(new Error("email not exist"));
+});
+export const verifyCode = asyncHandler(async (req, res, next) => {
+  const { otp, email } = req.body;
+  console.log(otp);
+  const user = await userModel.findOne({ email });
 
   if (user) {
-    if (compareHash({plainText:otp,hashValue:user.verifyCode})) {
-      await userModel.updateOne({email},{resetPassword:true})
-    return  sucessResponseHandling({res,message:"code is sucess"})
+    if (compareHash({ plainText: otp, hashValue: user.verifyCode })) {
+      await userModel.updateOne({ email }, { resetPassword: true });
+      return sucessResponseHandling({ res, message: "code is sucess" });
     }
-    return next(new Error("code is wrong"))
+    return next(new Error("code is wrong"));
   }
-return next(new Error("email or code not correct"))
-  
-})
+  return next(new Error("email or code not correct"));
+});
 // reset password
-export const resetPassword=asyncHandler(async(req,res,next)=>{
+export const resetPassword = asyncHandler(async (req, res, next) => {
+  const { email, newPassword, confirmationPassword } = req.body;
+  const hashPassword = generateHash({ plainText: newPassword });
+  const user = await userModel.findOne({ email });
+  if (user) {
+    if (user.resetPassword) {
+      await userModel.findOneAndUpdate(
+        { email },
+        { password: hashPassword, resetPassword: false }
+      );
+      return sucessResponseHandling({ res, message: "password is updated" });
+    }
+    return next(new Error(" verify code first"));
+  }
 
- const {email,newPassword,confirmationPassword}=req.body
-const hashPassword=generateHash({plainText:newPassword})
-const user=await userModel.findOne({email})
-if (user) {
-  if (user.resetPassword) {
-    await userModel.findOneAndUpdate({email},{password:hashPassword})
-    return sucessResponseHandling({res,message:"password is updated"})
-   }
-   return next(new Error(" verify code first"))
-}
-
- return next(new Error("email not exist"))
-
-  
-})
+  return next(new Error("email not exist"));
+});
