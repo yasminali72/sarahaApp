@@ -26,7 +26,6 @@ export const validation = (schema) => {
     const inputData = { ...req.body, ...req.params, ...req.query };
     if (req.headers["accept-language"]) {
       inputData["accept-language"] = req.headers["accept-language"];
-      console.log(inputData);
     }
     const validationResualt = schema.validate(inputData, { abortEarly: false });
     if (validationResualt.error) {

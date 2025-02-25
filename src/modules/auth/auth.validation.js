@@ -1,5 +1,6 @@
 import joi from "joi";
 import { generalFields } from "../../middleware/validation.middleware.js";
+import { userRoles } from "../../middleware/auth.middleware.js";
 
 export const signup = joi
   .object()
@@ -12,6 +13,9 @@ export const signup = joi
       .required(),
     phone: generalFields.phone.required(),
     gender: generalFields.gender.required(),
+ 
+    'accept-language': joi.string(),
+    role:joi.string().valid(userRoles.admin,userRoles.user)
   })
   .required();
 
