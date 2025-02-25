@@ -5,28 +5,16 @@ export const signup = joi
   .object()
   .keys({
     userName: generalFields.userName.required(),
-    email: generalFields.email
+    email: generalFields.email.required(),
+    password: generalFields.password.required(),
+    confirmationPassword: generalFields.confirmationPassword
+      .valid(joi.ref("password"))
       .required(),
-    password: generalFields.password
-      .required(),
-    confirmationPassword: generalFields.confirmationPassword.valid(joi.ref("password")).required(),
-    phone:generalFields.phone
-      .required(),
+    phone: generalFields.phone.required(),
     gender: generalFields.gender.required(),
-
-   
   })
-  .required()
-  .options({ allowUnknown: false });
+  .required();
 
-
-
-
-
-
-
-
-  
 export const signup_costum = {
   body: joi
     .object()
@@ -53,33 +41,25 @@ export const signup_costum = {
         .required(),
       gender: joi.string().valid("female", "male").required(),
     })
-    .required()
-    .options({ allowUnknown: false }),
-
+    .required(),
   params: joi
     .object()
     .keys({
       id: joi.boolean().required(),
     })
-    .required()
-    .options({ allowUnknown: false }),
+    .required(),
   headers: joi
     .object()
     .keys({
       "accept-Languages": joi.string().valid("en", "ar"),
     })
-    .required()
-    .options({ allowUnknown: true }),
+    .required(),
 };
 
 export const login = joi
   .object()
   .keys({
-    email: generalFields.email
-      .required(),
-    password: generalFields.password
-      .required(),
-   
+    email: generalFields.email.required(),
+    password: generalFields.password.required(),
   })
-  .required()
-  .options({ allowUnknown: false });
+  .required();
