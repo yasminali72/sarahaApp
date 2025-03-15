@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteAllMessages, deleteMessage, forgetPassword, freezeProfile, profile, reActiveProfile, resetPassword, shareProfile, unFreezeProfile, updatePassword, updatePhone, updateProfile, verifyCode } from "./services/user.services.js";
+import { deleteAllMessages, deleteMessage, forgetPassword, freezeProfile, pinMessage, profile, reActiveProfile, resetPassword, shareProfile, unFreezeProfile, unPinMessage, updatePassword, updatePhone, updateProfile, verifyCode } from "./services/user.services.js";
 import { authentication, authorization } from "../../middleware/auth.middleware.js";
 import { endpoint } from "./user.endpoint.js";
 import { validation } from "../../middleware/validation.middleware.js";
@@ -26,6 +26,10 @@ router.patch("/resetPassword",validation(validators.resetPassword),resetPassword
 
 // delete all messages
 router.patch("/all-messages",authentication(),authorization(endpoint.profile),deleteAllMessages)
+router.patch("/pin-message/:messageId",authentication(),authorization(endpoint.profile),pinMessage)
+router.patch("/unPin-message/:messageId",authentication(),authorization(endpoint.profile),unPinMessage)
+
+
 
 
 

@@ -24,10 +24,18 @@ export const profile = asyncHandler(async (req, res, next) => {
         select: "-password",
       },
     ]);
+    const pinMessages = await messageModel
+    .find({ recipientId: req.user._id ,pin:true})
+    .populate([
+      {
+        path: "recipientId",
+        select: "-password",
+      },
+    ]);
   return sucessResponseHandling({
     res,
     message: "Profile",
-    data: { user: req.user, messages },
+    data: { user: req.user, messages,numberOfAllMessages:messages.length,numberOfPinMessage:pinMessages.length },
   });
 });
 //  share profile
@@ -125,7 +133,7 @@ export const unFreezeProfile = asyncHandler(async (req, res, next) => {
   }
   return next(new Error("email not exist "));
 });
-
+// active account
 export const reActiveProfile = asyncHandler(async (req, res, next) => {
   const { email, otp } = req.body;
   const user = await userModel.findOne({ email });
@@ -215,3 +223,28 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 
   return next(new Error("email not exist"));
 });
+
+
+// pin message
+export const pinMessage=asyncHandler(async(req,res,next)=>{
+
+  const {messageId}=req.params
+  const message=await messageModel.findByIdAndUpdate(messageId,{pin:true},{new:true})
+
+  if (!message) {
+    return next(new Error("message not found"))
+  }
+  return sucessResponseHandling({res,message:"Message has been pinned successfully",data:{message}})
+})
+
+// pin message
+export const unPinMessage=asyncHandler(async(req,res,next)=>{
+
+  const {messageId}=req.params
+  const message=await messageModel.findByIdAndUpdate(messageId,{pin:false},{new:true})
+
+  if (!message) {
+    return next(new Error("message not found"))
+  }
+  return sucessResponseHandling({res,message:"Message has been unPinned successfully",data:{message}})
+})
