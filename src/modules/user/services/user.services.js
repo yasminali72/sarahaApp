@@ -147,7 +147,7 @@ export const reActiveProfile = asyncHandler(async (req, res, next) => {
   }
   return next(new Error("error"));
 });
-// delete message
+// delete one message
 export const deleteMessage = asyncHandler(async (req, res, next) => {
   const { messageId } = req.params;
   console.log(req.user);
@@ -164,7 +164,15 @@ export const deleteMessage = asyncHandler(async (req, res, next) => {
     data: [{ messages }],
   });
 });
-
+// delete all messages
+export const deleteAllMessages = asyncHandler(async (req, res, next) => {  
+  await messageModel.deleteMany({ recipientId: req.user._id });
+  return sucessResponseHandling({
+    res,
+    message: "all messages are deleted sucessful ",
+   
+  });
+});
 // forget password
 export const forgetPassword = asyncHandler(async (req, res, next) => {
   const { email } = req.body;

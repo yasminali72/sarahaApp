@@ -25,7 +25,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "email is required"],
       unique: [true, "email exist"],
-    },
+    },OTPForConfirmEmail:String,
     password: {
       type: String,
       required: [true, "password is required"],

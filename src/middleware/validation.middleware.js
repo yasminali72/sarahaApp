@@ -24,9 +24,7 @@ export const generalFields = {
 export const validation = (schema) => {
   return (req, res, next) => {
     const inputData = { ...req.body, ...req.params, ...req.query };
-    if (req.headers["accept-language"]) {
-      inputData["accept-language"] = req.headers["accept-language"];
-    }
+    
     const validationResualt = schema.validate(inputData, { abortEarly: false });
     if (validationResualt.error) {
       return res
