@@ -1,5 +1,6 @@
 import mongoose, { Schema, model } from "mongoose";
 import { userRoles } from "../../middleware/auth.middleware.js";
+export const providerTypes={google:"Google",system:"System"}
 
 const userSchema = new Schema(
   {
@@ -28,7 +29,9 @@ const userSchema = new Schema(
     },OTPForConfirmEmail:String,
     password: {
       type: String,
-      required: [true, "password is required"],
+      required: (data)=>{
+        return data?.provider === providerTypes.google? false :true
+      },
     },
     gender: {
       type: String,
@@ -38,7 +41,10 @@ const userSchema = new Schema(
     phone: String,
     DOB: Date,
     address: String,
-    image: String,
+    image: {
+      secure_url: String,
+      public_id:String
+    },
     confirmEmail: {
       type: Boolean,
       default: false,
@@ -57,7 +63,13 @@ const userSchema = new Schema(
     resetPassword:{
       type:Boolean
       ,default:false
-    }
+    ,
+  },
+  provider:{
+    type:String,
+    enum:Object.values(providerTypes),
+    default:providerTypes.system
+  }
   },
   { timestamps: true }
 );
