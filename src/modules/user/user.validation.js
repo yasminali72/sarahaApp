@@ -5,8 +5,8 @@ import { generalFields, validationObjectId } from '../../middleware/validation.m
 export const updateProfile=joi.object().keys({
     userName:generalFields.userName,
     gender:generalFields.gender,
-   
-    DOB:joi.date().less("now") 
+    DOB:joi.date().less("now"),
+    email:generalFields.email
 }).required()
 
 export const updatePassword=joi.object().keys({

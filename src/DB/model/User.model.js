@@ -10,6 +10,8 @@ const userSchema = new Schema(
       minLength: 2,
       maxLength: 25,
       trim: true,
+      match: /^[a-zA-Z][a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/
+
       // validate: {
       //   validator: function (v) {
       //     if (v == "admin") {
@@ -54,7 +56,7 @@ const userSchema = new Schema(
       default:userRoles.user,
       enum: Object.values(userRoles),
     },
-    changePasswordTime:Date,
+    changeCredentialTime:Date,
     isDeleted:{
       type:Boolean,
       default:false

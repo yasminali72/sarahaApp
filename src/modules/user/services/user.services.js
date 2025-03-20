@@ -57,7 +57,15 @@ export const shareProfile = asyncHandler(async (req, res, next) => {
 });
 // update profile
 export const updateProfile = asyncHandler(async (req, res, next) => {
-  const user = await userModel.findByIdAndUpdate(req.user._id, req.body, {
+const {email}=req.body
+if (email) {
+  if (await userModel.findOne({email})) {
+  return next(new Error("email is exist"))
+  }
+ const user= await userModel.findByIdAndUpdate(req.user._id,{email,changeCredentialTime:Date.now()})
+  return sucessResponseHandling({res,message:"email is updated",data:{user}})
+}
+  const user= await userModel.findByIdAndUpdate(req.user._id, req.body, {
     new: true,
     runValidators: true,
   });
@@ -76,7 +84,7 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
   const hashPassword = generateHash({ plainText: newPassword });
   const user = await userModel.findByIdAndUpdate(
     req.user._id,
-    { password: hashPassword, changePasswordTime: Date.now() },
+    { password: hashPassword, changeCredentialTime: Date.now() },
     { new: true, runValidators: true }
   );
   return sucessResponseHandling({
@@ -111,7 +119,7 @@ export const updatePhone = asyncHandler(async (req, res, next) => {
 export const freezeProfile = asyncHandler(async (req, res, next) => {
   const user = await userModel.findByIdAndUpdate(
     req.user._id,
-    { isDeleted: true, changePasswordTime: Date.now() },
+    { isDeleted: true, changeCredentialTime: Date.now() },
     {
       new: true,
       runValidators: true,

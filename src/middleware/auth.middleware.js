@@ -36,7 +36,7 @@ export const authentication = ()=>{
       
       return next(new Error('not register account',{cause:404}))
     }
-if (user.changePasswordTime?.getTime() >= decoded.iat*1000) {
+if (user.changeCredentialTime?.getTime() >= decoded.iat*1000) {
   return next(new Error("In-valid credentials",{cause:400}))
 }
  
