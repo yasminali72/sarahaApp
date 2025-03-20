@@ -1,5 +1,6 @@
-import userModel from "../../../DB/model/User.model.js";
+import userModel, { providerTypes } from "../../../DB/model/User.model.js";
 import messageModel from "../../../DB/model/message.model.js";
+import { userRoles } from "../../../middleware/auth.middleware.js";
 import {
   asyncHandler,
   globalErrorHandling,
@@ -193,7 +194,7 @@ export const deleteAllMessages = asyncHandler(async (req, res, next) => {
 export const forgetPassword = asyncHandler(async (req, res, next) => {
   const { email } = req.body;
 
-  if (await userModel.findOne({ email })) {
+  if (await userModel.findOne({ email ,provider:providerTypes.system})) {
     emailEvent.emit("emailForVerifyCode", { email });
     return sucessResponseHandling({ res, message: "code is sent" });
   }
