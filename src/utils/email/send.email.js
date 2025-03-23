@@ -11,7 +11,8 @@ export const sendEmail=async({to="",cc="",bcc="",subject="saraha online",text=""
      
           // send mail with defined transport object
           const info = await transporter.sendMail({
-            from: `'"sarahaOnline 👻" <${process.env.EMAIL}>'`, // sender address
+            from: `'"WhisperBox 📩" <${process.env.EMAIL}>'`, // sender address
+
             to,
             cc,
             bcc,
