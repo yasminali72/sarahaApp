@@ -1,9 +1,8 @@
 import userModel, { providerTypes } from "../../../DB/model/User.model.js";
 import messageModel from "../../../DB/model/message.model.js";
-import { userRoles } from "../../../middleware/auth.middleware.js";
 import {
   asyncHandler,
-  globalErrorHandling,
+  
 } from "../../../utils/errors/error.js";
 import { emailEvent } from "../../../utils/events/email.event.js";
 import { sucessResponseHandling } from "../../../utils/response/sucess.response.js";
